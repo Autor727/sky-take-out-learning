@@ -31,6 +31,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeMapper employeeMapper;
 
     @Override
+    public void startOrStop(Long id, Integer status) {
+        Employee employee= Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+        employeeMapper.update(employee);
+    }
+
+    @Override
     public void save(EmployeeDTO employeeDTO) {
         //把DTO转换成为实体对象
         Employee employee = new Employee();
@@ -93,5 +102,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new PageResult(total,employeeList);
     }
 
+    @Override
+    public Employee getById(Long id) {
+        return employeeMapper.getById(id);
+    }
 
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee=new Employee();
+        BeanUtils.copyProperties(employeeDTO,employee);
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.update(employee);
+    }
 }
